@@ -13,15 +13,14 @@
 
         <main class="main">
             <div class="controls">
-                <button id="sketch-btn">Color</button>
-                <button id="rainbow-btn">Rainbow</button>
-                <button id="shade-btn">Shade</button>
-                <button id="lighten-btn">Lighten</button>
-                <button id="eraser-btn">Eraser</button>
-                <button id="gridlines-btn">Toggle Grid Lines</button>
-                <button id="clear-btn">Clear</button>
-                <div id="size-val" class="sliderContainer">16 x 16</div>
-                <input type="range" min="1" max="64" value="16">
+                <label for="colorpicker">Color Picker: </label>
+                <input type="color" id="colorpicker" value="#000000">
+                <button id="colorBtn">Color</button>
+                <button id="rainbowBtn">Rainbow</button>
+                <button id="linesBtn">Toggle Grid Lines</button>
+                <button id="clearBtn">Clear</button>
+                <div class="slide-value" id="sizeVal">16x16</div>
+                <input type="range" min="1" max="64" class="slider" id="sizeSlider">
             </div>
             <div id="grid" class="grid"></div>
             <script src="script.js"> </script>
