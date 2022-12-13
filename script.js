@@ -17,6 +17,7 @@ function createGrid(size){
     for(let i = 0; i < size * size; i++){
         gridBox[i] = document.createElement('div');
         gridBox[i].classList.add('gridBox');
+        gridBox[i].setAttribute('draggable', 'false');
         if(lines){
             gridBox[i].classList.add('gridLines');
         }
