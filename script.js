@@ -1,10 +1,9 @@
 const DEFAULT_SIZE = 16;
 let currentSize = DEFAULT_SIZE;
 let gridBox = [];
-let mouseDown = false;
 let lines = true;
-let colors = false;
-let rainbow = false;
+let mouseDown = false;
+let currentMode = 'blank';
 const grid = document.getElementById('grid');
 const colorChange = document.getElementById('colorpicker');
 
@@ -35,22 +34,26 @@ document.body.onmouseup = () => (mouseDown = false);
 // This function will be used to change the color of the squares in the grid
 function changeColor(e){
     if(e.type === 'mouseover' && !mouseDown) return;
-    if(colors == false && rainbow == false){
+    if(currentMode === 'blank'){
         e.target.style.backgroundColor = 'black';
     }
-    else{
-        if(colors){
-            e.target.style.backgroundColor = colorChange.value;
-        }
+    else if(currentMode === 'color'){
+        e.target.style.backgroundColor = colorChange.value;
     }
-
-    if(rainbow){
+    else if(currentMode === 'rainbow'){
+        //colorBtn.style.backgroundColor = 'grey';
         const randomR = Math.floor(Math.random() * 256);
         const randomG = Math.floor(Math.random() * 256);
         const randomB = Math.floor(Math.random() * 256);
         const bgColor = "rgb("+ randomR + ", " + randomG + ", " + randomB + ")";
-        console.log(bgColor);
         e.target.style.backgroundColor = bgColor;
+    }
+    else if(currentMode === 'erase'){
+        //colorBtn.style.backgroundColor = 'grey';
+        e.target.style.backgroundColor = '';
+    }
+    else{
+
     }
     
 }
@@ -77,7 +80,7 @@ sizeSlider.onchange = (e) => changeSize(e.target.value);
 
 //This function updates the size value shown in the text 'size x size'
 function updateSizeValue(value){
-    sizeValue.innerHTML = `${value} x ${value}`;
+    sizeValue.innerHTML = `Grid Size: ${value} x ${value}`;
 }
 
 /* This function is used to update the size of the grid depending on the value of the slider
@@ -133,14 +136,15 @@ colorBtn.onclick = () => setColorMode();
  * If the button is clicked again it will be set to off
 */
 function setColorMode(){
-    if(colors == false){
-        colors = true;
+    if(currentMode != 'color'){
+        setCurrentMode('color');
     }
     else{
-        colors = false;
-        colorChange.value = '#000000';
+        setCurrentMode('blank');
     }
+    
 }
+
 
 //Add functionality to the rainbow button
 let rainbowBtn = document.getElementById('rainbowBtn');
@@ -150,16 +154,76 @@ rainbowBtn.onclick = () => setRainbowMode();
  * If it is clicked again, it will set rainbow mode to off
 */
 function setRainbowMode(){
-    if(rainbow == false){
-        rainbow = true;
+    if(currentMode != 'rainbow'){
+        setCurrentMode('rainbow');
     }
     else{
-        rainbow = false;
-        colorChange.value = '#000000';
+        setCurrentMode('blank');
     }
+}
+
+//Add functionality to Erase button
+let eraseBtn = document.getElementById('eraseBtn');
+eraseBtn.onclick = () => setEraseMode();
+
+/* This function will set the eraser button to on
+ * If erase mode is on, any click of a color will reset the background to its original
+ * color. Clicking the eraser button will turn of the erase mode
+ */
+function setEraseMode(){
+    if(currentMode != 'erase'){
+        setCurrentMode('erase');
+    }
+    else{
+        setCurrentMode('blank');
+    }
+}
+
+//This function will set which button is active
+function activateButton(mode){
+    if(currentMode == 'color'){
+        colorBtn.classList.remove('active');
+    }
+    else if(currentMode == 'rainbow'){
+        rainbowBtn.classList.remove('active');
+    }
+    else if(currentMode == 'erase'){
+        eraseBtn.classList.remove('active');
+    }
+
+    if(mode == 'color'){
+        colorBtn.classList.add('active');
+        //colorBtn.classList.add('colorChange');
+    }
+    else if(mode == 'rainbow'){
+        rainbowBtn.classList.add('active');
+    }
+    else if(mode == 'erase'){
+        eraseBtn.classList.add('active');
+    }
+}
+
+//This function will set the current mode and activate the corresponding button
+function setCurrentMode(mode){
+    if(mode == 'color'){
+        myInterval = setInterval(() => {
+            if(colorChange.value == "#000000"){
+                colorBtn.style.color = 'white';
+            }
+            colorBtn.style.backgroundColor = colorChange.value;
+        }, 200);
+    }
+    else if(mode != 'color'){
+        clearInterval(myInterval);
+        colorBtn.style.backgroundColor = 'grey';
+    }
+    activateButton(mode);
+    currentMode = mode;
+
 }
 
 
 window.onload = () => {
     createGrid(DEFAULT_SIZE);
+    activateButton(currentMode);
 }
